@@ -1,1 +1,2 @@
-# weather
+# Rust-Weather!
+A simple program used in learning API fetch with Rust. It uses OpenWeather API to retrieve current weather status from cities all around the world. All the user needs to do is write in their designated city and voilà...
