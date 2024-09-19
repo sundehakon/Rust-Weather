@@ -48,7 +48,7 @@ pub fn format_weather_message(weather: &Weather, temp: f64) -> String {
 }
 
 pub fn main() {
-    print!("Enter the city name: ");
+    print!("Enter location: ");
     io::stdout().flush().expect("Failed to flush stdout");
 
     let mut city_name = String::new();
