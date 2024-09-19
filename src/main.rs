@@ -1,8 +1,20 @@
 use std::env;
+use std::io::{self, Write};
 use reqwest;
 use dotenv::dotenv;
+use serde::Deserialize;
 
-pub fn get_weather(city_name: &str) -> Result<String, Box<dyn std::error::Error>> {
+#[derive(Deserialize)]
+struct WeatherResponse {
+    main: Main,
+}
+
+#[derive(Deserialize)]
+struct Main {
+    temp: f64,
+}
+
+pub fn get_weather(city_name: &str) -> Result<WeatherResponse, Box<dyn std::error::Error>> {
     dotenv().ok();
 
     let api_key = env::var("APIKEY").map_err(|_| {
@@ -10,23 +22,26 @@ pub fn get_weather(city_name: &str) -> Result<String, Box<dyn std::error::Error>
     })?;
 
     let url = format!(
-        "https://api.openweathermap.org/data/2.5/weather?q={}&appid={}",
+        "https://api.openweathermap.org/data/2.5/weather?q={}&appid={}&units=metric",
         city_name, api_key
     );
 
-    let response = reqwest::blocking::get(&url)?.text()?;
+    let response = reqwest::blocking::get(&url)?.json::<WeatherResponse>()?;
     Ok(response)
 }
 
 pub fn main() {
-    let usage = format!("Usage: {} [city_name]", env::args().next().unwrap_or_else(|| "program".to_string()));
+    print!("Enter the city name: ");
+    io::stdout().flush().expect("Failed to flush stdout");
 
-    let city_name = env::args()
-        .nth(1)
-        .expect(&usage);
+    let mut city_name = String::new();
+    io::stdin().read_line(&mut city_name).expect("Failed to read line");
+    let city_name = city_name.trim();
 
-    match get_weather(&city_name) {
-        Ok(body) => println!("{}", body),
+    match get_weather(city_name) {
+        Ok(response) => {
+            println!("Temperature: {:.2}°C", response.main.temp); 
+        }
         Err(e) => eprintln!("Error: {}", e),
     }
 }
