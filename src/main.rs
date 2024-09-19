@@ -38,17 +38,12 @@ pub fn get_weather(city_name: &str) -> Result<WeatherResponse, Box<dyn std::erro
 }
 
 pub fn format_weather_message(weather: &Weather, temp: f64) -> String {
-    let description = weather.description.to_lowercase();
-    let description = description.char_indices().next()
-        .map(|(i, c)| description[..i].to_string() + &c.to_uppercase().to_string() + &description[i+1..])
-        .unwrap_or(description);
-
     match weather.main.as_str() {
-        "Clear" => format!("It is a clear day with a temperature of {:.2}°C. {}", temp, description),
-        "Clouds" => format!("It is cloudy with a temperature of {:.2}°C. {}", temp, description),
-        "Rain" => format!("It is rainy with a temperature of {:.2}°C. {}", temp, description),
-        "Snow" => format!("It is snowing with a temperature of {:.2}°C. {}", temp, description),
-        _ => format!("The weather is {} with a temperature of {:.2}°C. {}", weather.main, temp, description),
+        "Clear" => format!("It is a clear day with a temperature of {:.2}°C.", temp),
+        "Clouds" => format!("It is cloudy with a temperature of {:.2}°C.", temp),
+        "Rain" => format!("It is rainy with a temperature of {:.2}°C.", temp),
+        "Snow" => format!("It is snowing with a temperature of {:.2}°C.", temp),
+        _ => format!("The weather is {} with a temperature of {:.2}°C.", weather.main, temp),
     }
 }
 
