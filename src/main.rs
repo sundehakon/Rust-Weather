@@ -7,11 +7,18 @@ use serde::Deserialize;
 #[derive(Deserialize)]
 struct WeatherResponse {
     main: Main,
+    weather: Vec<Weather>,
 }
 
 #[derive(Deserialize)]
 struct Main {
     temp: f64,
+}
+
+#[derive(Deserialize)]
+struct Weather {
+    main: String,
+    description: String,
 }
 
 pub fn get_weather(city_name: &str) -> Result<WeatherResponse, Box<dyn std::error::Error>> {
@@ -40,7 +47,13 @@ pub fn main() {
 
     match get_weather(city_name) {
         Ok(response) => {
-            println!("Temperature: {:.2}°C", response.main.temp); 
+            if let Some(weather) = response.weather.get(0) {
+                print!("Weather status is {}", weather.main);
+                print!(" with a temperature of {:.2}°C", response.main.temp);
+                println!("");
+            } else {
+                println!("Weather data not found.");
+            }
         }
         Err(e) => eprintln!("Error: {}", e),
     }
