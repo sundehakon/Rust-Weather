@@ -36,13 +36,13 @@ fn get_weather(city_name: &str) -> Result<WeatherResponse, Box<dyn std::error::E
     Ok(response)
 }
 
-fn format_weather_message(weather: &Weather, temp: f64) -> String {
+fn format_weather_message(weather: &Weather, temp: f64, city_name: &str) -> String {
     match weather.main.as_str() {
-        "Clear" => format!("It is a clear day with a temperature of {:.2}°C.", temp),
-        "Clouds" => format!("It is cloudy with a temperature of {:.2}°C.", temp),
-        "Rain" => format!("It is rainy with a temperature of {:.2}°C.", temp),
-        "Snow" => format!("It is snowing with a temperature of {:.2}°C.", temp),
-        _ => format!("The weather is {} with a temperature of {:.2}°C.", weather.main, temp),
+        "Clear" => format!("Weather in {} is a clear day with a temperature of {:.2}°C.", city_name, temp),
+        "Clouds" => format!("Weather in {} is cloudy with a temperature of {:.2}°C.", city_name, temp),
+        "Rain" => format!("Weather in {} is rainy with a temperature of {:.2}°C.", city_name, temp),
+        "Snow" => format!("Weather in {} is snowing with a temperature of {:.2}°C.", city_name, temp),
+        _ => format!("Weather in {} is {} with a temperature of {:.2}°C.", city_name, weather.main, temp),
     }
 }
 
@@ -57,7 +57,7 @@ pub fn main() {
     match get_weather(city_name) {
         Ok(response) => {
             if let Some(weather) = response.weather.get(0) {
-                let message = format_weather_message(weather, response.main.temp);
+                let message = format_weather_message(weather, response.main.temp, city_name);
                 println!("{}", message);
             } else {
                 println!("Weather data not found.");
