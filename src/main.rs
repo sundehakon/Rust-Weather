@@ -18,10 +18,9 @@ struct Main {
 #[derive(Deserialize)]
 struct Weather {
     main: String,
-    description: String,
 }
 
-pub fn get_weather(city_name: &str) -> Result<WeatherResponse, Box<dyn std::error::Error>> {
+fn get_weather(city_name: &str) -> Result<WeatherResponse, Box<dyn std::error::Error>> {
     dotenv().ok();
 
     let api_key = env::var("APIKEY").map_err(|_| {
@@ -37,7 +36,7 @@ pub fn get_weather(city_name: &str) -> Result<WeatherResponse, Box<dyn std::erro
     Ok(response)
 }
 
-pub fn format_weather_message(weather: &Weather, temp: f64) -> String {
+fn format_weather_message(weather: &Weather, temp: f64) -> String {
     match weather.main.as_str() {
         "Clear" => format!("It is a clear day with a temperature of {:.2}°C.", temp),
         "Clouds" => format!("It is cloudy with a temperature of {:.2}°C.", temp),
